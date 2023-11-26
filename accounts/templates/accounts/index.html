@@ -1,0 +1,16 @@
+<h1>Welcome to kioku</h1>
+{% if error_message %}
+<p>{{ error_message }}</p>
+{% endif %}
+<form action="{% url 'accounts:index' %}" method="post">
+  {% csrf_token %}
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" />
+  </div>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" />
+  </div>
+  <button type="submit">Login</button>
+</form>

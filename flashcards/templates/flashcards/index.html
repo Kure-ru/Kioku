@@ -1,0 +1,9 @@
+<h1>Flashcards</h1>
+
+{% if flashcard %}
+<a href="{% url 'flashcards:detail' flashcard.id %}">Start reviewing</a>
+{% else %}
+<p>No flashcards are available.</p>
+{% endif %}
+
+<a href="{% url 'flashcards:logout' %}">Logout</a>

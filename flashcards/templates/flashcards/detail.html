@@ -1,0 +1,17 @@
+{% if flashcard %}
+<form action="{% url 'flashcards:answer' flashcard.id %}" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>
+      <h2>{{ flashcard.question }}</h2>
+    </legend>
+    {% if error_message %}
+    <p>{{ error_message }}</p>
+    {% endif %}
+    <button type="submit" name="answer" value="good">Good</button>
+    <button type="submit" name="answer" value="bad">Bad</button>
+  </fieldset>
+</form>
+{% else %}
+<p>No flashcards are available.</p>
+{% endif %}
