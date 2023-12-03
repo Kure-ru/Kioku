@@ -1,0 +1,9 @@
+<h2>Create a new account</h2>
+{% if error_message %}
+<p>{{ error_message }}</p>
+{% endif %}
+<a href="{% url 'flashcards:login' %}">already have an account? login </a>
+<form action="{% url 'flashcards:register' %}" method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Register</button>
+</form>

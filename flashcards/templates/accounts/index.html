@@ -2,7 +2,8 @@
 {% if error_message %}
 <p>{{ error_message }}</p>
 {% endif %}
-<form action="{% url 'accounts:index' %}" method="post">
+<a href="{% url 'flashcards:register' %}">don't have an account ? Register</a>
+<form action="{% url 'flashcards:index' %}" method="post">
   {% csrf_token %}
   <div>
     <label for="username">Username:</label>
