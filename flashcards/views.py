@@ -1,19 +1,31 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views import generic, View
+from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import BaseUserCreationForm
 
-from .models import Flashcard
+from .models import Flashcard, Deck
 
 class DashboardView(LoginRequiredMixin, generic.ListView):
     login_url = 'accounts:index'
     redirect_field_name = 'redirect_to'
     template_name = "flashcards/dashboard.html"
+    model = Deck
 
     def get(self, request):
-        flashcard = Flashcard.objects.filter(next_due_date__lte=timezone.now()).order_by("?").first()
+        decks = Deck.objects.all()
+        return render(request, self.template_name, {"decks" : decks})
+class DeckView(LoginRequiredMixin, generic.ListView):
+    login_url = 'accounts:index'
+    redirect_field_name = 'redirect_to'
+    template_name = "flashcards/deck.html"
+    model = Deck
+
+    def get(self, request, deck_id):
+        deck = get_object_or_404(self.model, pk=deck_id)
+        flashcard = Flashcard.objects.filter(next_due_date__lte=timezone.now(), deck=deck).order_by("?").first()
         if flashcard is None:
             return render(request, self.template_name, {"flashcard" : None})
         else:
@@ -30,7 +42,7 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         return render(request, self.template_name, {"flashcard" : flashcard})
 
     def post(self, request, flashcard_id):
-        current_flashcard = get_object_or_404(Flashcard, pk=flashcard_id)
+        current_flashcard = get_object_or_404(self.model, pk=flashcard_id)
         current_flashcard.last_seen = timezone.now()
 
         selected_answer = request.POST["answer"]
@@ -41,30 +53,63 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         current_flashcard.save()
 
         # Get the next flashcard
-        next_flashcard = Flashcard.objects.filter(next_due_date__lte=timezone.now()).order_by("?").first()
+        next_flashcard = self.model.objects.filter(next_due_date__lte=timezone.now()).order_by("?").first()
         if next_flashcard is None:
             return redirect("flashcards:dashboard")
         else :
-            return redirect("flashcards:detail", flashcard_id=next_flashcard.id)
+            return redirect(self.template_name, flashcard_id=next_flashcard.id)
 
 class CreateView(View):
     template_name = "flashcards/new.html"
+    flashcard_model = Flashcard
+    deck_model = Deck
 
     def get(self, request):
-        return render(request, self.template_name)
+        user_decks = Deck.objects.filter(user=request.user)
+        return render(request, self.template_name, {'decks': user_decks})
 
     def post(self, request):
         try:
             question = request.POST['question']
             answer = request.POST['answer']
-            user = request.user
-            # tags = request.POST['tags']
-            print(question, answer, user)
-            flashcard = Flashcard(question=question, answer=answer, user=user)
+            deck_id = request.POST['deck']
+
+            deck = get_object_or_404(Deck, pk=deck_id)
+
+            flashcard = Flashcard(question=question, answer=answer, user=request.user, deck=deck)
+            flashcard.save()
+            messages.success(request, 'Flashcard created successfully.')
+
+            user_decks = Deck.objects.filter(user=request.user)
+            return render(request, self.template_name, {'decks': user_decks})
+        except:
+            messages.error(request, "An error occurred while creating the flashcard" )
+            return render(request, self.template_name, {'error': 'An error occurred while creating the flashcard'})
+
+class EditView(View):
+    template_name = "flashcards/edit.html"
+    flashcard_model = Flashcard
+    deck_model = Deck
+
+    def get(self, request):
+        flashcards = self.flashcard_model.objects.filter(user=request.user)
+        return render(request, self.template_name, {'flashcards': flashcards})
+
+    def post(self, request):
+            flashcard_id = request.POST['id']
+            print(flashcard_id)
+            try:
+                flashcard = self.flashcard_model.objects.get(id=flashcard_id)
+            except self.flashcard_model.DoesNotExist:
+                return render(request, self.template_name, {'error': 'Flashcard does not exist'})
+
+            flashcard.question = request.POST['question']
+            flashcard.answer = request.POST['answer']
+            deck_id = request.POST['deck']
+            deckObj = get_object_or_404(Deck, pk=deck_id)
+            flashcard.deck = deckObj
             flashcard.save()
             return redirect("flashcards:dashboard")
-        except:
-            return render(request, self.template_name, {'error': 'An error occurred while creating the flashcard'})
 
 class LoginView(View):
     def get(self, request):

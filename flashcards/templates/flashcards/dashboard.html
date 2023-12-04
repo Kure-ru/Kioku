@@ -1,10 +1,11 @@
-<h1>Flashcards</h1>
+<h1>Dashboard</h1>
 
-{% if flashcard %}
-<a href="{% url 'flashcards:detail' flashcard.id %}">Start reviewing</a>
+{% if decks %} {% for deck in decks %}
+<a href="{% url 'flashcards:deck' deck.id %}">{{deck.name}}</a>
+{% endfor %}
+<a href="{% url 'flashcards:edit' %}">Edit decks</a>
 {% else %}
-<p>No flashcards are available.</p>
+<p>No deck are available.</p>
 {% endif %}
 
-<a href="{% url 'flashcards:create' %}">Add a new card</a>
 <a href="{% url 'flashcards:logout' %}">Logout</a>
