@@ -1,6 +1,7 @@
 {% if flashcard %}
 <form action="{% url 'flashcards:post' flashcard.id %}" method="post">
   {% csrf_token %}
+  <span>{{ flashcard.deck }}</span>
   <fieldset>
     <legend>
       <h2>{{ flashcard.question }}</h2>
@@ -16,3 +17,4 @@
 {% else %}
 <p>No flashcards are available.</p>
 {% endif %}
+<a href="{% url 'flashcards:dashboard' %}">Back to dashboard</a>

@@ -18,6 +18,8 @@ urlpatterns = [
     path("<int:flashcard_id>/answer", views.DetailView.as_view(), name="post"),
     # /flashcards/new
     path('new', views.CreateView.as_view(), name="create"),
+    # /flashcards/delete
+    path('delete/<int:flashcard_id>/', views.DeleteView.as_view(), name='delete'),
     # /flashcards/logout
     path("logout/", views.LogoutView.as_view(), name="logout"),
 ]

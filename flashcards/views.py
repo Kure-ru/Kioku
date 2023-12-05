@@ -53,11 +53,12 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         current_flashcard.save()
 
         # Get the next flashcard
-        next_flashcard = self.model.objects.filter(next_due_date__lte=timezone.now()).order_by("?").first()
+        deck = current_flashcard.deck
+        next_flashcard = self.model.objects.filter(next_due_date__lte=timezone.now(), deck=deck).order_by("?").first()
         if next_flashcard is None:
             return redirect("flashcards:dashboard")
         else :
-            return redirect(self.template_name, flashcard_id=next_flashcard.id)
+            return redirect('flashcards:detail', flashcard_id=next_flashcard.id)
 
 class CreateView(View):
     template_name = "flashcards/new.html"
@@ -110,6 +111,12 @@ class EditView(View):
             flashcard.deck = deckObj
             flashcard.save()
             return redirect("flashcards:dashboard")
+
+class DeleteView(View):
+    def post(self, request, flashcard_id):
+        flashcard = get_object_or_404(Flashcard, pk=flashcard_id)
+        flashcard.delete()
+        return redirect('flashcards:dashboard')
 
 class LoginView(View):
     def get(self, request):
