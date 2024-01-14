@@ -6,11 +6,11 @@
   {% csrf_token %}
   <div>
     <label for="question">question</label>
-    <textarea type="text" name="question" placeholder="question"></textarea>
+    <textarea type="text" name="question" placeholder="question" minlength="3"></textarea>
   </div>
   <div>
     <label for="answer">answer</label>
-    <textarea type="text" name="answer" placeholder="answer"></textarea>
+    <textarea type="text" name="answer" placeholder="answer" minlength="3"></textarea>
   </div>
   <div>
     <select name="deck">

@@ -1,13 +1,13 @@
 from django.urls import path
 from . import views
 
-
 app_name = "flashcards"
 urlpatterns = [
     path("", views.LoginView.as_view(), name="index"),
     path("login", views.LoginView.as_view(), name="login"),
     path('register', views.RegisterView.as_view(), name="register"),
     path("dashboard", views.DashboardView.as_view(), name="dashboard"),
+    path("dashboard/post", views.DashboardView.as_view(), name="dashboard_post"),
     # /flashcards/edit
     path("edit", views.EditView.as_view(), name="edit"),
     # /flashcards/deck/:id

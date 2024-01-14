@@ -7,5 +7,11 @@
 {% else %}
 <p>No deck are available.</p>
 {% endif %}
+<form action="{% url 'flashcards:dashboard_post' %}" method="post">
+    {% csrf_token %}
+    <label for="deck_name">new deck</label>
+    <input type="text" name="deck_name">
+    <button type="submit">add</button>
+</form>
 
 <a href="{% url 'flashcards:logout' %}">Logout</a>

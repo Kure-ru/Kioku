@@ -17,6 +17,17 @@ class DashboardView(LoginRequiredMixin, generic.ListView):
     def get(self, request):
         decks = Deck.objects.all()
         return render(request, self.template_name, {"decks" : decks})
+
+    def post(self, request):
+        try:
+            deck_name = request.POST['deck_name']
+            new_deck = Deck(user=request.user, name=deck_name)
+            new_deck.save()
+            messages.success(request, 'Deck created successfully.')
+            return redirect('flashcards:dashboard')
+        except ValueError:
+            messages.error(request, 'There was an error. Please try again')
+            return redirect('flashcards:dashboard')
 class DeckView(LoginRequiredMixin, generic.ListView):
     login_url = 'accounts:index'
     redirect_field_name = 'redirect_to'
