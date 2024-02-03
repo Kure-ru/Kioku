@@ -1,0 +1,17 @@
+<h1>Dashboard</h1>
+
+{% if decks %} {% for deck in decks %}
+<a href="{% url 'flashcards:deck' deck.id %}">{{deck.name}}</a>
+{% endfor %}
+<a href="{% url 'flashcards:edit' %}">Edit decks</a>
+{% else %}
+<p>No deck are available.</p>
+{% endif %}
+<form action="{% url 'flashcards:dashboard_post' %}" method="post">
+    {% csrf_token %}
+    <label for="deck_name">new deck</label>
+    <input type="text" name="deck_name">
+    <button type="submit">add</button>
+</form>
+
+<a href="{% url 'flashcards:logout' %}">Logout</a>

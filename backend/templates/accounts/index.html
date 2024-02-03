@@ -1,0 +1,17 @@
+<h1>Welcome to kioku</h1>
+{% if error_message %}
+<p>{{ error_message }}</p>
+{% endif %}
+<a href="{% url 'flashcards:register' %}">don't have an account ? Register</a>
+<form action="{% url 'flashcards:index' %}" method="post">
+  {% csrf_token %}
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" />
+  </div>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" />
+  </div>
+  <button type="submit">Login</button>
+</form>

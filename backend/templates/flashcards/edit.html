@@ -1,0 +1,29 @@
+{% if flashcards %}
+<table>
+  <tr>
+    <th>Question</th>
+    <th>Answer</th>
+    <th>Deck</th>
+    <th>edit</th>
+  </tr>
+
+  {% for flashcard in flashcards %}
+  <tr>
+    <form method="post" action="{% url 'flashcards:edit' %}">
+      {% csrf_token %}
+      <td><input name="id" value="{{ flashcard.id }}" hidden /></td>
+      <td><input name="question" value="{{ flashcard.question }}" /></td>
+      <td><input name="answer" value="{{ flashcard.answer }}" /></td>
+      <td><input name="deck" value="{{ flashcard.deck.id }}" /></td>
+      <td><button type="submit">edit</button></td>
+    </form>
+    <form method="post" action="{% url 'flashcards:delete' flashcard.id %}">
+      {% csrf_token %}
+      <td><button type="submit">delete</button></td>
+    </form>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No flashcards are available.</p>
+{% endif %}

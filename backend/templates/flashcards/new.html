@@ -1,0 +1,33 @@
+<h1>Create a new flashcard</h1>
+{% if error_message %}
+<p>{{ error_message }}</p>
+{% endif %}
+<form action="{% url 'flashcards:create' %}" method="post">
+  {% csrf_token %}
+  <div>
+    <label for="question">question</label>
+    <textarea type="text" name="question" placeholder="question" minlength="3"></textarea>
+  </div>
+  <div>
+    <label for="answer">answer</label>
+    <textarea type="text" name="answer" placeholder="answer" minlength="3"></textarea>
+  </div>
+  <div>
+    <select name="deck">
+      {% for deck in decks %}
+      <option value="{{ deck.id }}">{{ deck.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit">Submit</button>
+  <button type="reset" onclick="location.href='/flashcards/dashboard'">
+    Back to dashboard
+  </button>
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+</form>

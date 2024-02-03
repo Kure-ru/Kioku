@@ -1,0 +1,6 @@
+{% if flashcard %}
+<a href="{% url 'flashcards:detail' flashcard.id %}">Start reviewing</a>
+{% else %}
+<p>No flashcards are available.</p>
+{% endif %}
+<a href="{% url 'flashcards:create' %}">Add a new card</a>
